@@ -1,14 +1,28 @@
+import axios from 'axios';
 import React, { useState } from 'react';
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 const Login = ({ settoggleAuth }) => {
    const [email, setEmail] = useState('');
    const [password, setPassword] = useState('');
+   const [loader, setLoader] = useState(false)
 
-   const handleSubmit = (event) => {
+   const nav = useNavigate()
+
+   const handleSubmit = async (event) => {
       event.preventDefault();
+      setLoader(true)
+      await axios.post('/sign-in', { email, password }).then((res) => {
+         if (res) {
+            nav("/")
+            setLoader(false)
+         } else {
+            setLoader(false)
+            alert("Something went wrong")
+         }
+      })
    };
 
    return (
@@ -40,7 +54,12 @@ const Login = ({ settoggleAuth }) => {
 
             <div className='d-flex justify-content-around align-items-center'>
                <Button variant="primary" type="submit">
-                  Submit
+                  {loader ?
+                     <span className='d-flex justify-content-center align-items-center gap-2'>
+                        <div className="loader"> </div>
+                        <small>please wait </small>
+                     </span>
+                     : 'Login'}
                </Button>
 
                <p>Dont have and account? <Link style={{ color: "#0096FF" }} onClick={() => settoggleAuth(false)}>please signup</Link> </p>
