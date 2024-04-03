@@ -10,11 +10,10 @@ const App = () => {
 
 
  
-  // axios.defaults.baseURL = "https://mern-server-h65f.onrender.com"
-  axios.defaults.baseURL = "http://localhost:4500"
+  axios.defaults.baseURL = "https://mern-server-h65f.onrender.com"
+  // axios.defaults.baseURL = "http://localhost:4500"
 
- 
-  const token = localStorage.getItem("token")
+   const token = localStorage.getItem("token")
 
   console.log(token)  
 
