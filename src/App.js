@@ -9,7 +9,7 @@ import axios from 'axios'
 const App = () => {
 
 
-  axios.defaults.baseURL = "http://localhost:4500"
+  axios.defaults.baseURL = "https://mern-server-h65f.onrender.com"
 
  
   const token = localStorage.getItem("token")
