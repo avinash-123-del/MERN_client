@@ -120,7 +120,7 @@ const Home = () => {
           </tbody>
         </Table>
         :
-        <div className='w-fit text-center opacity-75 bounce-top'>
+        <div className=' text-center opacity-75 bounce-top m-auto' style={{maxWidth : "400px"}}>
           <img className='w-100' src="/note.png" alt="" />
         </div>
       }
