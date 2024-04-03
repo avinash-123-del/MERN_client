@@ -18,10 +18,9 @@ export const singupUser = async (name, email, password) => {
 export const loginUser = async (email  , password) => {
    try {
       const res = await axios.post('/sign-in', { email, password })
-      console.log("check" ,res)
       return res.data
    } catch (error) {
-      console.log(error)
+      return error?.response
    }
 }
 

@@ -16,17 +16,17 @@ const Login = ({ settoggleAuth }) => {
       event.preventDefault();
       setLoader(true)
       loginUser(email, password).then((res) => {
-         console.log(res)
-         if (res) {
+         if(res.status === 401){
+            setLoader(false)
+            alert(res.data)
+         }
+         else {
             localStorage.setItem("token", res?.token)
             localStorage.setItem("userId", res?.userInfo?.id)
             localStorage.setItem("userName", res?.userInfo?.name)
             nav("/")
             setLoader(false)
-         } else {
-            setLoader(false)
-            alert("Something went wrong")
-         }
+         } 
       })
    };
 
