@@ -3,25 +3,26 @@ import React, { useState } from 'react';
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 import { Link } from 'react-router-dom';
+import { singupUser } from './ApiHelpers';
 
 const Signup = ({ settoggleAuth }) => {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [loader , setLoader]  = useState(false)
+  const [loader, setLoader] = useState(false)
 
-  const handleSubmit = async(event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
     setLoader(true)
-  await axios.post('/sign-up', { name, email, password }).then((res) => {
-    if (res) {
-       settoggleAuth(true)
-       setLoader(false)
-    } else {
-       setLoader(false)
-    }
- })
-};
+    singupUser(name , email , password).then((res) => {
+      if (res) {
+        settoggleAuth(true)
+        setLoader(false)
+      } else {
+        setLoader(false)
+      }
+    })
+  };
 
   return (
     <div style={{ height: '18vh', marginTop: '100px' }} className="row px-3 d-flex flex-col align-items-center justify-content-center">
@@ -57,12 +58,12 @@ const Signup = ({ settoggleAuth }) => {
 
         <div className="d-flex justify-content-around align-items-center">
           <Button variant="primary" type="submit">
-            {loader ? 
-            <span className='d-flex justify-content-center align-items-center gap-2'>
-            <div className="loader"> </div>
-            <small>please wait </small>
-            </span>
-              : 'Submit' }
+            {loader ?
+              <span className='d-flex justify-content-center align-items-center gap-2'>
+                <div className="loader"> </div>
+                <small>please wait </small>
+              </span>
+              : 'Submit'}
           </Button>
 
           <p>Already have an account? <Link style={{ color: '#0096FF' }} onClick={() => settoggleAuth(true)}>Login here</Link></p>

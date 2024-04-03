@@ -1,37 +1,126 @@
-import React from 'react'
-import { Table } from 'react-bootstrap'
+import React, { useEffect, useState } from 'react';
+import { Button, Form, Table } from 'react-bootstrap';
 import { CiEdit } from "react-icons/ci";
 import { FaTrash } from "react-icons/fa";
+import { createNote, deleteNote, getNote, updateNote } from '../components/ApiHelpers';
+import { useNavigate } from 'react-router';
 
 const Home = () => {
+  const [tableData, setTableData] = useState([]);
+  const [title, setTitle] = useState('');
+  const [description, setDescription] = useState('');
+  const [editItemId, setEditItemId] = useState(null);
+  const [userId, setUserId] = useState(null); // Add userId state
+
+  const nav = useNavigate();
+
+  const handleLogout = () => {
+    localStorage.clear();
+    setTableData([]); // Clear tableData state
+    nav("/auth");
+  };
+
+  useEffect(() => {
+    const userId = localStorage.getItem("userId");
+    setUserId(userId); // Set userId state
+  }, []); // Run once on component mount
+
+  useEffect(() => {
+    if (userId) {
+      getNote().then((res) => setTableData(res));
+    }
+  }, [userId]); // Run whenever userId changes
+
+  const handleCreate = async (e) => {
+    e.preventDefault();
+
+    if (editItemId !== null) {
+      const updatedData = tableData.map(item => {
+        if (item._id === editItemId) {
+          return { ...item, title: title, description: description };
+        }
+        return item;
+      });
+      setTableData(updatedData);
+      updateNote(editItemId, title, description,)
+      setEditItemId(null); // Reset editItemId
+    } else {
+      const newData = {
+        _id: Date.now(),
+        title: title,
+        description: description
+      };
+      createNote(title, description).then((res) => {
+        res && setTableData([...tableData, newData]);
+        
+      })
+    }
+    setTitle('');
+    setDescription('');
+  };
+
+  const handleEdit = (id, title, description) => {
+    console.log(id, title, description);
+    setEditItemId(id);
+    setTitle(title);
+    setDescription(description);
+  };
+
+  const handleDelete = (id) => {
+    const newData = tableData.filter(item => item._id !== id);
+    setTableData(newData);
+    deleteNote(id)
+  };
+
+  const userName = localStorage.getItem("userName");
+
   return (
-    <div className='container mt-5' >
-      <h3 className='text-center' style={{ color: "#0096FE" }}>Welcome Avinash Chandraker</h3>
+    <div className='container mt-5'>
+      <h3 className='text-center' style={{ color: "#0096FE" }}>Welcome {userName} <span onClick={handleLogout}>Logout</span></h3>
 
-      <Table size="sm" className='tbl'>
-        <thead >
-          <tr className='px-3'>
-            <th>S.No.</th>
-            <th>First Name</th>
-            <th>Last Name</th>
-            <th>Username</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>1</td>
-            <td>Mark</td>
-            <td>Otto</td>
-            <td className='d-flex gap-1'>
-              <button className='edit'><CiEdit size={12} /></button>
-              <button className='del'><FaTrash size={12} /></button>
-            </td>
-          </tr>
+      <Form onSubmit={(e) => handleCreate(e)} className='d-flex flex-column flex-lg-row align-items-center row mt-5 justify-content-center'>
+        <Form.Group className="mb-3 col-sm-6 col-lg-3" controlId="exampleForm.ControlInput1">
+          <Form.Control required type="text" placeholder="Enter title" value={title} onChange={(e) => setTitle(e.target.value)} />
+        </Form.Group>
+        <Form.Group className="mb-3 col-sm-6" controlId="exampleForm.ControlInput1">
+          <Form.Control required type="text" placeholder="Enter Description" value={description} onChange={(e) => setDescription(e.target.value)} />
+        </Form.Group>
+        <Button variant="primary" type="submit" className='note_btn mb-3' >
+          {editItemId !== null ? 'Update' : 'Create'}
+        </Button>
+      </Form>
 
-        </tbody>
-      </Table>
+      {tableData?.length > 0 ?
+        <Table size="sm" className='tbl'>
+          <thead>
+            <tr className='px-3'>
+              <th>S.No.</th>
+              <th>Title</th>
+              <th>Description</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {tableData.map((item, index) => (
+              <tr key={item._id}>
+                <td>{index + 1}</td>
+                <td>{item.title}</td>
+                <td>{item.description}</td>
+                <td className='d-flex gap-1'>
+                  <button className='edit'><CiEdit size={12} onClick={() => handleEdit(item._id, item.title, item.description)} /></button>
+                  <button className='del'><FaTrash size={12} onClick={() => handleDelete(item._id)} /></button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </Table>
+        :
+        <div className='w-100 text-center opacity-75 bounce-top'>
+          <img src="/note.png" alt="" />
+        </div>
+      }
     </div>
-  )
-}
+  );
+};
 
-export default Home
+export default Home;

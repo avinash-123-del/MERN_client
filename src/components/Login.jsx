@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 import { Link, useNavigate } from 'react-router-dom';
+import { loginUser } from './ApiHelpers';
 
 const Login = ({ settoggleAuth }) => {
    const [email, setEmail] = useState('');
@@ -14,8 +15,12 @@ const Login = ({ settoggleAuth }) => {
    const handleSubmit = async (event) => {
       event.preventDefault();
       setLoader(true)
-      await axios.post('/sign-in', { email, password }).then((res) => {
+      loginUser(email, password).then((res) => {
+         console.log(res)
          if (res) {
+            localStorage.setItem("token", res?.token)
+            localStorage.setItem("userId", res?.userInfo?.id)
+            localStorage.setItem("userName", res?.userInfo?.name)
             nav("/")
             setLoader(false)
          } else {
