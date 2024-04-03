@@ -82,6 +82,7 @@ const Home = () => {
       <h3 className='text-center' style={{ color: "#0096FE" }}>Welcome {userName} <small className='fs-6' style={{cursor : "pointer"}} onClick={handleLogout}>Logout <IoLogOutOutline />
       </small></h3>
 
+
       <Form onSubmit={(e) => handleCreate(e)} className='d-flex flex-column flex-lg-row align-items-center row mt-5 justify-content-center'>
         <Form.Group className="mb-3 col-sm-6 col-lg-3" controlId="exampleForm.ControlInput1">
           <Form.Control required type="text" placeholder="Enter title" value={title} onChange={(e) => setTitle(e.target.value)} />
@@ -119,8 +120,8 @@ const Home = () => {
           </tbody>
         </Table>
         :
-        <div className='w-100 text-center opacity-75 bounce-top'>
-          <img src="/note.png" alt="" />
+        <div className='w-fit text-center opacity-75 bounce-top'>
+          <img className='w-100' src="/note.png" alt="" />
         </div>
       }
     </div>

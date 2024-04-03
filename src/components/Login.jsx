@@ -16,9 +16,10 @@ const Login = ({ settoggleAuth }) => {
       event.preventDefault();
       setLoader(true)
       loginUser(email, password).then((res) => {
-         if(res.status === 401){
+         console.log(res)
+         if(res?.status === 0){
             setLoader(false)
-            alert(res.data)
+            alert(res?.message)
          }
          else {
             localStorage.setItem("token", res?.token)
