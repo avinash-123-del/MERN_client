@@ -4,32 +4,34 @@ import { CiEdit } from "react-icons/ci";
 import { FaTrash } from "react-icons/fa";
 import { createNote, deleteNote, getNote, updateNote } from '../components/ApiHelpers';
 import { useNavigate } from 'react-router';
+import { IoLogOutOutline } from "react-icons/io5";
+
 
 const Home = () => {
   const [tableData, setTableData] = useState([]);
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [editItemId, setEditItemId] = useState(null);
-  const [userId, setUserId] = useState(null); // Add userId state
-
+  const [userId, setUserId] = useState(null);
   const nav = useNavigate();
 
   const handleLogout = () => {
+    setTableData([]);
     localStorage.clear();
-    setTableData([]); // Clear tableData state
     nav("/auth");
   };
 
   useEffect(() => {
     const userId = localStorage.getItem("userId");
-    setUserId(userId); // Set userId state
-  }, []); // Run once on component mount
+    setUserId(userId);
+  }, []);
 
   useEffect(() => {
+    const userId = localStorage.getItem("userId");
     if (userId) {
-      getNote().then((res) => setTableData(res));
+      getNote(userId).then((res) => setTableData(res));
     }
-  }, [userId]); // Run whenever userId changes
+  }, [userId]);
 
   const handleCreate = async (e) => {
     e.preventDefault();
@@ -43,7 +45,7 @@ const Home = () => {
       });
       setTableData(updatedData);
       updateNote(editItemId, title, description,)
-      setEditItemId(null); // Reset editItemId
+      setEditItemId(null);
     } else {
       const newData = {
         _id: Date.now(),
@@ -51,8 +53,8 @@ const Home = () => {
         description: description
       };
       createNote(title, description).then((res) => {
-        res && setTableData([...tableData, newData]);
-        
+        res && getNote(userId).then((res) => setTableData(res));
+
       })
     }
     setTitle('');
@@ -67,16 +69,18 @@ const Home = () => {
   };
 
   const handleDelete = (id) => {
+    deleteNote(id)
+    console.log("id", id)
     const newData = tableData.filter(item => item._id !== id);
     setTableData(newData);
-    deleteNote(id)
   };
 
   const userName = localStorage.getItem("userName");
 
   return (
     <div className='container mt-5'>
-      <h3 className='text-center' style={{ color: "#0096FE" }}>Welcome {userName} <span onClick={handleLogout}>Logout</span></h3>
+      <h3 className='text-center' style={{ color: "#0096FE" }}>Welcome {userName} <small className='fs-6' style={{cursor : "pointer"}} onClick={handleLogout}>Logout <IoLogOutOutline />
+      </small></h3>
 
       <Form onSubmit={(e) => handleCreate(e)} className='d-flex flex-column flex-lg-row align-items-center row mt-5 justify-content-center'>
         <Form.Group className="mb-3 col-sm-6 col-lg-3" controlId="exampleForm.ControlInput1">
