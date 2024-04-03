@@ -53,12 +53,11 @@ const Home = () => {
         description: description
       };
       createNote(title, description).then((res) => {
+        setTitle('');
+        setDescription('');
         res && getNote(userId).then((res) => setTableData(res));
-
       })
     }
-    setTitle('');
-    setDescription('');
   };
 
   const handleEdit = (id, title, description) => {

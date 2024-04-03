@@ -58,7 +58,7 @@ const Login = ({ settoggleAuth }) => {
             </Form.Group>
 
 
-            <div className='d-flex justify-content-around align-items-center'>
+            <div className='d-flex flex-column flex-lg-row justify-content-around align-items-center gap-3'>
                <Button variant="primary" type="submit">
                   {loader ?
                      <span className='d-flex justify-content-center align-items-center gap-2'>
@@ -68,7 +68,7 @@ const Login = ({ settoggleAuth }) => {
                      : 'Login'}
                </Button>
 
-               <p>Dont have and account? <Link style={{ color: "#0096FF" }} onClick={() => settoggleAuth(false)}>please signup</Link> </p>
+                     <p>Dont have and account? <Link style={{ color: "#0096FF" }} onClick={() => settoggleAuth(false)}>please signup</Link> </p>
             </div>
          </Form>
       </div>
